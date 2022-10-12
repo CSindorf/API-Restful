@@ -25,17 +25,13 @@ public class AlunoService {
 	
 	//para pegar um único aluno do banco, pelo Id dele
 	public Aluno getAlunoById(int id) {
-<<<<<<< HEAD
 		return alunoRepository.findById(id).orElse(null);
 		//return alunoRepository.findById(id).get(); 
 		//usa esse e não o getById porque esse tem alguns tratamentos de erro que o outro não tem, mas para retornar um registro pelo id os dois serviriam
 		//esse indica "se achar, devolve o aluno com id, se não achar, manda a resposta como null"
-=======
-		return alunoRepository.findById(id).get(); 
 		//usa esse e não o getById porque esse tem alguns tratamentos de erro que o outro não tem, mas para retornar um registro pelo id os dois serviriam
 		//TAMBÉM PODERIA USAR-> return alunoRepository.findById(id).orElse(null); 
 		//esse orElse diz que, se não encontrar o id que foi pesquisado ele retorna nulo e também pode ser usado no lugar do get()
->>>>>>> origin/servicos
 	}
 	
 	//para salvar um aluno

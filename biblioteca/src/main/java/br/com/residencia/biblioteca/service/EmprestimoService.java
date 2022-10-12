@@ -21,11 +21,7 @@ public class EmprestimoService {
 	
 	//para pegar um único registro do banco, pelo Id dele
 	public Emprestimo getEmprestimoById(int id) {
-<<<<<<< HEAD
 		return emprestimoRepository.findById(id).orElse(null);
-=======
-		return emprestimoRepository.findById(id).get(); 
->>>>>>> origin/servicos
 	}
 	
 	//para salvar

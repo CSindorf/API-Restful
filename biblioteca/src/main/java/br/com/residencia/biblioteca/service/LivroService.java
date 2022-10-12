@@ -21,11 +21,7 @@ public class LivroService {
 	
 	//para pegar um único registro do banco, pelo Id dele
 	public Livro getLivroById(int id) {
-<<<<<<< HEAD
 		return livroRepository.findById(id).orElse(null);
-=======
-		return livroRepository.findById(id).get(); 
->>>>>>> origin/servicos
 	}
 	
 	//para salvar

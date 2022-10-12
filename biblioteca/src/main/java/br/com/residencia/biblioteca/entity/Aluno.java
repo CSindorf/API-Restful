@@ -11,6 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "numeroMatriculaAluno"
+		)
 @Entity //diz o tipo de classe
 @Table(name = "alunos") //diz com qual tabela ela se comunica
 
