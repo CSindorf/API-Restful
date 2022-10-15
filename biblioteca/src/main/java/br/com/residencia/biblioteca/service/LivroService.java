@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.residencia.biblioteca.dto.LivroDTO;
 import br.com.residencia.biblioteca.entity.Livro;
 import br.com.residencia.biblioteca.repository.LivroRepository;
 
@@ -13,6 +14,31 @@ import br.com.residencia.biblioteca.repository.LivroRepository;
 public class LivroService {
 	@Autowired
 	LivroRepository livroRepository;
+	
+	 // ----- DTO CONVERSOR -----
+	
+	//método para fazer a conversão de um DTO para uma entidade normal
+	private Livro toEntidade (LivroDTO livroDTO) {
+		Livro livro = new Livro();
+		livro.setNomeLivro(livroDTO.getNomeLivro());
+		livro.setCodigoIsbn(livroDTO.getCodigoIsbn());
+		livro.setDataLancamento(livroDTO.getDataLancamento());
+		livro.setNomeAutor(livroDTO.getNomeAutor());
+		return livro;
+	}
+	
+	//método para fazer a conversão de uma entidade normal para um DTO
+	private LivroDTO toDTO(Livro livro) {
+		LivroDTO livroDTO = new LivroDTO();
+		livroDTO.setCodigoLivro(livro.getCodigoLivro());
+		livroDTO.setNomeLivro(livro.getNomeLivro());
+		livroDTO.setCodigoIsbn(livro.getCodigoIsbn());
+		livroDTO.setDataLancamento(livro.getDataLancamento());
+		livroDTO.setNomeAutor(livro.getNomeAutor());
+		return livroDTO;
+	}
+	
+	 // ----- DTO CONVERSOR - FIM -----
 	
 	//para puxar a lista de registros
 	public List<Livro> getAllLivros(){
@@ -29,6 +55,15 @@ public class LivroService {
 		return livroRepository.save(livro);
 	}
 	
+	//para salvar como DTO
+	public LivroDTO saveLivroDTO(LivroDTO livroDTO) {
+		Livro livro = toEntidade(livroDTO);
+		Livro novoLivro = livroRepository.save(livro);
+				
+		LivroDTO livroAtualizadoDTO = toDTO(novoLivro);
+		return livroAtualizadoDTO;
+	}
+	
 	//para atualizar
 	public Livro updateLivro (Livro livro, int id) { 
 		
@@ -41,6 +76,22 @@ public class LivroService {
 		//comentou editora porque na regra proposta pelo professor, não haveria possibilidade de edição desta parte pelo usuário
 		
 		return livroRepository.save(livroExistenteNoBanco);
+	}
+	
+	//atualizar como DTO
+	public LivroDTO updateLivroDTO (LivroDTO livroDTO, int id) { 
+		Livro livroExistenteNoBanco = getLivroById(id);
+		LivroDTO livroAtualizadoDTO = new LivroDTO();
+			
+		if(livroExistenteNoBanco != null) {
+			livroExistenteNoBanco = toEntidade(livroDTO);
+			
+			Livro livroAtualizado = livroRepository.save(livroExistenteNoBanco);
+				
+			livroAtualizadoDTO = toDTO(livroAtualizado);
+			
+		}
+		return livroAtualizadoDTO;
 	}
 	
 	//para deletar

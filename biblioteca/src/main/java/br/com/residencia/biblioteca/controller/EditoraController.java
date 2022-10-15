@@ -28,14 +28,13 @@ public class EditoraController {
 	
 	@GetMapping
 	public ResponseEntity<List<Editora>> getAllEditoras(){
-		return new ResponseEntity <>(editoraService.getAllEditoras(),HttpStatus.OK); 
+		return new ResponseEntity<>(editoraService.getAllEditoras(),HttpStatus.OK);
 	}
 	
 	//get all usando DTO
 	@GetMapping("/dto")
-	public ResponseEntity<List<Editora>> getAllEditoras(List<EditoraDTO> editoraDTO){
-		Editora editora = (Editora) editoraService.getAllEditoras(((EditoraDTO) editoraDTO).transformaParaObjeto());
-		return new ResponseEntity <>(editora,HttpStatus.OK); 
+	public ResponseEntity<List<EditoraDTO>> getAllEditorasDTO(){
+		return new ResponseEntity<>(editoraService.getAllEditorasDTO(),HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
@@ -62,6 +61,13 @@ public class EditoraController {
 	public ResponseEntity<Editora> updateEditora(@RequestBody Editora editora, @PathVariable int id){
 		return new ResponseEntity <>(editoraService.updateEditora(editora, id),HttpStatus.OK);
 	}
+	
+	//Update DTO
+	@PutMapping("/dto/{id}")
+	public ResponseEntity<EditoraDTO> updateEditoraDTO(@RequestBody EditoraDTO editoraDTO, @PathVariable int id){
+		return new ResponseEntity <>(editoraService.updateEditoraDTO(editoraDTO, id),HttpStatus.OK);
+	}
+	
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Editora> deleteEditora(@PathVariable int id) {
