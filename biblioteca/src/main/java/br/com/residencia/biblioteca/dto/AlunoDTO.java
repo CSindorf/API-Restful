@@ -1,6 +1,7 @@
 package br.com.residencia.biblioteca.dto;
 
 import java.time.Instant;
+import java.util.List;
 
 public class AlunoDTO {
 	private int numeroMatriculaAluno;
@@ -12,6 +13,8 @@ public class AlunoDTO {
 	private String complemento;
 	private String bairro;
 	private String cidade;
+	private List<EmprestimoDTO> emprestimos;
+	
 	public int getNumeroMatriculaAluno() {
 		return numeroMatriculaAluno;
 	}
@@ -65,6 +68,13 @@ public class AlunoDTO {
 	}
 	public void setCidade(String cidade) {
 		this.cidade = cidade;
+	}
+	public List<EmprestimoDTO> getEmprestimos() {
+		return emprestimos;
+	}
+
+	public void setEmprestimos(List<EmprestimoDTO> emprestimos) {
+		this.emprestimos = emprestimos;
 	}
 	
 }

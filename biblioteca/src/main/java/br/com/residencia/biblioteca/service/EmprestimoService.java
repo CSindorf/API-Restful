@@ -28,7 +28,7 @@ public class EmprestimoService {
 	}
 		
 	//método para fazer a conversão de uma entidade normal para um DTO
-	private EmprestimoDTO toDTO(Emprestimo emprestimo) {
+	public EmprestimoDTO toDTO(Emprestimo emprestimo) {
 		EmprestimoDTO emprestimoDTO = new EmprestimoDTO();
 		emprestimoDTO.setDataEmprestimo(emprestimo.getDataEmprestimo());
 		emprestimoDTO.setDataEntrega(emprestimo.getDataEntrega());
@@ -96,8 +96,8 @@ public class EmprestimoService {
 		emprestimoExistenteNoBanco.setDataEmprestimo(emprestimo.getDataEmprestimo());
 		emprestimoExistenteNoBanco.setDataEntrega(emprestimo.getDataEntrega());
 		emprestimoExistenteNoBanco.setValorEmprestimo(emprestimo.getValorEmprestimo());
-		//emprestimoExistenteNoBanco.setAluno(emprestimo.getAluno());
-		//emprestimoExistenteNoBanco.setLivro(emprestimo.getLivro());
+		emprestimoExistenteNoBanco.setAluno(emprestimo.getAluno());
+		emprestimoExistenteNoBanco.setLivro(emprestimo.getLivro());
 		//comentou os dois últimos porque na regra proposta pelo professor, não haveria possibilidade de edição destas duas pelo usuário
 		
 		return emprestimoRepository.save(emprestimoExistenteNoBanco);

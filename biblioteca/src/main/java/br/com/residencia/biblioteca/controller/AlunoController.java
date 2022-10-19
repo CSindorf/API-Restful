@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.residencia.biblioteca.dto.AlunoDTO;
+import br.com.residencia.biblioteca.dto.AlunoEmprestimoDTO;
 import br.com.residencia.biblioteca.entity.Aluno;
 import br.com.residencia.biblioteca.service.AlunoService;
 
@@ -39,6 +40,18 @@ public class AlunoController {
 	@GetMapping("/dto")
 	public ResponseEntity<List<AlunoDTO>> getAllAlunosDTO(){
 		return new ResponseEntity<>(alunoService.getAllAlunosDTO(),HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/dto/aluno-emprestimos")
+	public ResponseEntity<List<AlunoDTO>> getAllAlunosEmprestimosDTO() {
+		return new ResponseEntity<>(alunoService.getAllEmprestimosAlunosDTO(), HttpStatus.OK);
+	}
+
+	//get all puxando a lista dos empréstimos filtrada só com os campos do aluno desejado
+	@GetMapping("/dto/filter/aluno-emprestimo")
+	public ResponseEntity<List<AlunoEmprestimoDTO>> filterAllAlunosEmprestimosDTO() {
+		return new ResponseEntity<>(alunoService.filterAlunoEmprestimo(), HttpStatus.OK);
 	}
 	
 	//aqui tem o /{id} porque na url ele vai retornar o caminho todo + o id do aluno: /aluno/id-do-aluno

@@ -99,4 +99,11 @@ public class EditoraController {
 	public ResponseEntity<Editora> saveEditoraFromApi(@PathVariable String cnpj) {
 		return new ResponseEntity <>(editoraService.saveEditoraFromApi(cnpj),HttpStatus.CREATED);
 	}
+	
+	//salvando uma nova editora usando o nome que vem da consulta com o cnpj
+	@PostMapping("/cnpj/post")
+	public ResponseEntity<Editora> saveEditoraFromApiPost(@RequestBody String cnpj) {
+		return new ResponseEntity<>(editoraService.saveEditoraFromApi(cnpj),
+				HttpStatus.CREATED);
+	}
 }
