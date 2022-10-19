@@ -28,7 +28,7 @@ public class LivroService {
 	}
 	
 	//método para fazer a conversão de uma entidade normal para um DTO
-	private LivroDTO toDTO(Livro livro) {
+	public LivroDTO toDTO(Livro livro) {
 		LivroDTO livroDTO = new LivroDTO();
 		livroDTO.setCodigoLivro(livro.getCodigoLivro());
 		livroDTO.setNomeLivro(livro.getNomeLivro());

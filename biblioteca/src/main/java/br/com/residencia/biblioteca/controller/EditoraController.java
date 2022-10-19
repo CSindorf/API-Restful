@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.residencia.biblioteca.dto.ConsultaCNPJDTO;
 import br.com.residencia.biblioteca.dto.EditoraDTO;
 import br.com.residencia.biblioteca.entity.Editora;
 import br.com.residencia.biblioteca.service.EditoraService;
@@ -35,6 +36,12 @@ public class EditoraController {
 	@GetMapping("/dto")
 	public ResponseEntity<List<EditoraDTO>> getAllEditorasDTO(){
 		return new ResponseEntity<>(editoraService.getAllEditorasDTO(),HttpStatus.OK);
+	}
+	
+	//get all usando DTO e mostrando quais livros a editora tem
+	@GetMapping("/dto/editora-livros")
+	public ResponseEntity<List<EditoraDTO>> getAllEditorasLivrosDTO(){
+		return new ResponseEntity<>(editoraService.getAllEditoraLivrosDTO(),HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
@@ -67,8 +74,7 @@ public class EditoraController {
 	public ResponseEntity<EditoraDTO> updateEditoraDTO(@RequestBody EditoraDTO editoraDTO, @PathVariable int id){
 		return new ResponseEntity <>(editoraService.updateEditoraDTO(editoraDTO, id),HttpStatus.OK);
 	}
-	
-	
+		
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Editora> deleteEditora(@PathVariable int id) {
 		Editora editora = editoraService.getEditoraById(id);
@@ -76,5 +82,21 @@ public class EditoraController {
 			return new ResponseEntity <>(editora,HttpStatus.NOT_FOUND);
 		else
 			return new ResponseEntity <>(editoraService.deleteEditora(id),HttpStatus.OK);
+	}
+	
+	//get usando a consulta do cnj
+	@GetMapping("/consulta-cnpj/{cnpj}")
+	public ResponseEntity<ConsultaCNPJDTO> consultaCnpjApiExterna(@PathVariable String cnpj){
+		ConsultaCNPJDTO consultaCNPJDTO = editoraService.consultaCnpjApiExterna(cnpj);
+		if(null == consultaCNPJDTO)
+			return new ResponseEntity <>(consultaCNPJDTO,HttpStatus.NOT_FOUND);
+		else
+			return new ResponseEntity <>(consultaCNPJDTO,HttpStatus.OK);
+	}
+	
+	//salvando uma nova editora usando o nome que vem da consulta com o cnpj
+	@GetMapping("/cnpj/{cnpj}")
+	public ResponseEntity<Editora> saveEditoraFromApi(@PathVariable String cnpj) {
+		return new ResponseEntity <>(editoraService.saveEditoraFromApi(cnpj),HttpStatus.CREATED);
 	}
 }
