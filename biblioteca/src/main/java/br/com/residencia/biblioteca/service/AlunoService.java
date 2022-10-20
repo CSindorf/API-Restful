@@ -34,14 +34,15 @@ public class AlunoService {
 	//método para fazer a conversão de um DTO para uma entidade normal
 	private Aluno toEntidade (AlunoDTO alunoDTO) {
 		Aluno aluno = new Aluno();
-		alunoDTO.setBairro(aluno.getBairro());
-		alunoDTO.setCidade(aluno.getCidade());
-		alunoDTO.setComplemento(aluno.getComplemento());
-		alunoDTO.setCpf(aluno.getCpf());
-		alunoDTO.setDataNascimento(aluno.getDataNascimento());
-		alunoDTO.setLogradouro(aluno.getLogradouro());
-		alunoDTO.setNome(aluno.getNome());
-		alunoDTO.setNumeroLogradouro(aluno.getNumeroLogradouro());
+		aluno.setBairro(alunoDTO.getBairro());
+		aluno.setCidade(alunoDTO.getCidade());
+		aluno.setComplemento(alunoDTO.getComplemento());
+		aluno.setCpf(alunoDTO.getCpf());
+		aluno.setDataNascimento(alunoDTO.getDataNascimento());
+		aluno.setLogradouro(alunoDTO.getLogradouro());
+		aluno.setNome(alunoDTO.getNome());
+		aluno.setNumeroLogradouro(alunoDTO.getNumeroLogradouro());
+		aluno.setNumeroMatriculaAluno(alunoDTO.getNumeroMatriculaAluno());
 		return aluno;
 	}
 		
@@ -201,6 +202,7 @@ public class AlunoService {
 		
 		if(alunoExistenteNoBanco != null) {
 			//pega o que foi digitado no "alunoDTO", chama o "toEntidade" para fazer a conversão e armazena no "alunoAtualizada"
+			alunoDTO.setNumeroMatriculaAluno(alunoExistenteNoBanco.getNumeroMatriculaAluno());
 			alunoExistenteNoBanco = toEntidade(alunoDTO);
 			
 			//salva no banco o que foi digitado

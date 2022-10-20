@@ -20,6 +20,7 @@ public class LivroService {
 	//método para fazer a conversão de um DTO para uma entidade normal
 	private Livro toEntidade (LivroDTO livroDTO) {
 		Livro livro = new Livro();
+		livro.setCodigoLivro(livroDTO.getCodigoLivro());
 		livro.setNomeLivro(livroDTO.getNomeLivro());
 		livro.setCodigoIsbn(livroDTO.getCodigoIsbn());
 		livro.setDataLancamento(livroDTO.getDataLancamento());
@@ -84,6 +85,7 @@ public class LivroService {
 		LivroDTO livroAtualizadoDTO = new LivroDTO();
 			
 		if(livroExistenteNoBanco != null) {
+			livroDTO.setCodigoLivro(livroExistenteNoBanco.getCodigoLivro());
 			livroExistenteNoBanco = toEntidade(livroDTO);
 			
 			Livro livroAtualizado = livroRepository.save(livroExistenteNoBanco);

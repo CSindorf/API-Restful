@@ -31,11 +31,16 @@ public class EditoraService {
 	@Autowired
 	LivroService livroService;
 	
+	//para fazer o envio de email que está no update com DTO
+	@Autowired
+	EmailService emailService;
+	
 	 // ----- DTO CONVERSOR -----
 	
 	//método para fazer a conversão de um DTO para uma entidade normal
 	private Editora toEntidade (EditoraDTO editoraDTO) {
 		Editora editora = new Editora();
+		editora.setCodigoEditora(editoraDTO.getCodigoeditora());
 		editora.setNome(editoraDTO.getNome());
 		return editora;
 	}
@@ -156,6 +161,7 @@ public class EditoraService {
 		
 		if(editoraExistenteNoBanco != null) {
 			//pega o que foi digitado no "editoraDTO", chama o "toEntidade" para fazer a conversão e armazena no "editoraAtualizada"
+			editoraDTO.setCodigoeditora(editoraExistenteNoBanco.getCodigoEditora());
 			editoraExistenteNoBanco = toEntidade(editoraDTO);
 			
 			//salva no banco o que foi digitado
@@ -165,6 +171,8 @@ public class EditoraService {
 			editoraAtualizadaDTO = toDTO(editoraAtualizada);
 			
 		}
+		//envio de email pela api
+		emailService.sendEmail("catarina.sindorf@gmail.com", "teste", "teste de envio");
 		return editoraAtualizadaDTO;
 	}
 	

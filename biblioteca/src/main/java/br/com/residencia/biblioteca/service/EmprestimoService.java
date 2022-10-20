@@ -21,9 +21,10 @@ public class EmprestimoService {
 	//método para fazer a conversão de um DTO para uma entidade normal
 	private Emprestimo toEntidade (EmprestimoDTO emprestimoDTO) {
 		Emprestimo emprestimo = new Emprestimo();
-		emprestimoDTO.setDataEmprestimo(emprestimo.getDataEmprestimo());
-		emprestimoDTO.setDataEntrega(emprestimo.getDataEntrega());
-		emprestimoDTO.setValorEmprestimo(emprestimo.getValorEmprestimo());
+		emprestimo.setDataEmprestimo(emprestimoDTO.getDataEmprestimo());
+		emprestimo.setDataEntrega(emprestimoDTO.getDataEntrega());
+		emprestimo.setValorEmprestimo(emprestimoDTO.getValorEmprestimo());
+		emprestimo.setCodigoEmprestimo(emprestimoDTO.getCodigoEmprestimo());
 		return emprestimo;
 	}
 		
@@ -110,6 +111,7 @@ public class EmprestimoService {
 		
 		if(emprestimoExistenteNoBanco != null) {
 			//pega o que foi digitado no "alunoDTO", chama o "toEntidade" para fazer a conversão e armazena no "alunoAtualizada"
+			emprestimoDTO.setCodigoEmprestimo(emprestimoExistenteNoBanco.getCodigoEmprestimo());
 			emprestimoExistenteNoBanco = toEntidade(emprestimoDTO);
 			
 			//salva no banco o que foi digitado
