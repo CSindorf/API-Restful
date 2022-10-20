@@ -35,6 +35,16 @@ public class Editora {
 	@OneToMany(mappedBy = "editora")  
 	private Set<Livro> livros; //aqui usa set porque uma editora pode ter vários livros, então o resultado tem que ser múltiplo, tipo um arrays
 
+	//para fazer upload de imagem
+	@Column(name = "imagem_nome")
+	private String imagemNome;
+	
+	@Column(name = "imagem_filename")
+	private String imagemFileName;
+	
+	@Column(name = "imagem_url")
+	private String imagemUrl;
+	
 	public int getCodigoEditora() {
 		return codigoEditora;
 	}
@@ -57,6 +67,30 @@ public class Editora {
 
 	public void setLivros(Set<Livro> livros) {
 		this.livros = livros;
+	}
+
+	public String getImagemNome() {
+		return imagemNome;
+	}
+
+	public void setImagemNome(String imagemNome) {
+		this.imagemNome = imagemNome;
+	}
+
+	public String getImagemFileName() {
+		return imagemFileName;
+	}
+
+	public void setImagemFileName(String imagemFileName) {
+		this.imagemFileName = imagemFileName;
+	}
+
+	public String getImagemUrl() {
+		return imagemUrl;
+	}
+
+	public void setImagemUrl(String imagemUrl) {
+		this.imagemUrl = imagemUrl;
 	}
 		
 }

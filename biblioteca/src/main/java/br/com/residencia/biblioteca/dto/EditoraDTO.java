@@ -6,7 +6,10 @@ public class EditoraDTO {
 	private int codigoeditora;
 	private String nome;
 	private List<LivroDTO> listaLivrosDTO; //criou a lista de livros para poder consultar quais livros cada editora possui
-
+	private String imagemNome;
+	private String imagemFileName;
+	private String imagemUrl;
+	
 	public int getCodigoeditora() {
 		return codigoeditora;
 	}
@@ -29,6 +32,30 @@ public class EditoraDTO {
 
 	public void setListaLivrosDTO(List<LivroDTO> listaLivrosDTO) {
 		this.listaLivrosDTO = listaLivrosDTO;
+	}
+
+	public String getImagemNome() {
+		return imagemNome;
+	}
+
+	public void setImagemNome(String imagemNome) {
+		this.imagemNome = imagemNome;
+	}
+
+	public String getImagemFileName() {
+		return imagemFileName;
+	}
+
+	public void setImagemFileName(String imagemFileName) {
+		this.imagemFileName = imagemFileName;
+	}
+
+	public String getImagemUrl() {
+		return imagemUrl;
+	}
+
+	public void setImagemUrl(String imagemUrl) {
+		this.imagemUrl = imagemUrl;
 	}
 	
 }

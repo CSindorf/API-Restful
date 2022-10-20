@@ -1,9 +1,11 @@
 package br.com.residencia.biblioteca.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.residencia.biblioteca.dto.ConsultaCNPJDTO;
 import br.com.residencia.biblioteca.dto.EditoraDTO;
@@ -83,6 +87,20 @@ public class EditoraController {
 		else
 			return new ResponseEntity <>(editoraService.deleteEditora(id),HttpStatus.OK);
 	}
+
+	//para salvar imagem
+	@PostMapping(value = "/editora-com-foto", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			 MediaType.MULTIPART_FORM_DATA_VALUE })
+	public ResponseEntity<EditoraDTO> saveEditoraComFoto(@RequestPart("editora") String editora,
+			@RequestPart("source") MultipartFile file) throws IOException {
+		
+		EditoraDTO editoraDTO = editoraService.saveFotoImgBB(editora, file);
+		
+		if (null == editoraDTO)
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		else
+			return new ResponseEntity<>(editoraDTO, HttpStatus.CREATED);
+	} 
 	
 	//get usando a consulta do cnj
 	@GetMapping("/consulta-cnpj/{cnpj}")
@@ -106,4 +124,5 @@ public class EditoraController {
 		return new ResponseEntity<>(editoraService.saveEditoraFromApi(cnpj),
 				HttpStatus.CREATED);
 	}
+	
 }

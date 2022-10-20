@@ -1,17 +1,32 @@
 package br.com.residencia.biblioteca.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.residencia.biblioteca.dto.ConsultaCNPJDTO;
 import br.com.residencia.biblioteca.dto.EditoraDTO;
 import br.com.residencia.biblioteca.dto.LivroDTO;
+import br.com.residencia.biblioteca.dto.imgbb.ImgBBDTO;
 import br.com.residencia.biblioteca.entity.Editora;
 import br.com.residencia.biblioteca.entity.Livro;
 import br.com.residencia.biblioteca.repository.EditoraRepository;
@@ -35,6 +50,13 @@ public class EditoraService {
 	@Autowired
 	EmailService emailService;
 	
+	//para slvar imagem
+	@Value("${imgbb.host.url}")
+	private String imgBBHostUrl;
+	
+	@Value("${imgbb.host.key}")
+    private String imgBBHostKey;
+	
 	 // ----- DTO CONVERSOR -----
 	
 	//método para fazer a conversão de um DTO para uma entidade normal
@@ -50,6 +72,9 @@ public class EditoraService {
 		EditoraDTO editoraDTO = new EditoraDTO();
 		editoraDTO.setCodigoeditora(editora.getCodigoEditora());
 		editoraDTO.setNome(editora.getNome());
+		editoraDTO.setImagemFileName(editora.getImagemFileName());
+		editoraDTO.setImagemNome(editora.getImagemNome());
+		editoraDTO.setImagemUrl(editora.getImagemUrl());
 		return editoraDTO;
 	}
 	
@@ -180,6 +205,76 @@ public class EditoraService {
 	public Editora deleteEditora(int id) {
 		editoraRepository.deleteById(id);
 		return getEditoraById(id);
+	}
+	
+	//salvar imagem
+	public EditoraDTO saveFotoImgBB(String editora,
+			MultipartFile file) throws IOException {
+		
+		RestTemplate restTemplate = new RestTemplate();
+		String serverUrl = imgBBHostUrl + imgBBHostKey;
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		
+		MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
+		
+		ContentDisposition contentDisposition = ContentDisposition
+				.builder("form-data")
+				.name("image")
+				.filename(file.getOriginalFilename())
+				.build();
+		
+		fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+		
+		HttpEntity<byte[]> fileEntity = new HttpEntity<>(file.getBytes(), fileMap);
+		
+		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+		body.add("image", fileEntity);
+		
+		HttpEntity<MultiValueMap<String, Object>> requestEntity =
+				new HttpEntity<>(body, headers);
+		
+		ResponseEntity<ImgBBDTO> response = null;
+		ImgBBDTO imgDTO = new ImgBBDTO();
+		Editora novaEditora = new Editora(); 
+		try {
+			response = restTemplate.exchange(
+					serverUrl,
+					HttpMethod.POST,
+					requestEntity,
+					ImgBBDTO.class);
+			
+			imgDTO = response.getBody();
+			System.out.println("ImgBBDTO: " + imgDTO.getData().toString());
+		} catch (HttpClientErrorException e) {
+			e.printStackTrace();
+		}
+		
+		//Converte os dados da editora recebidos no formato String em Entidade
+		//  Coleta os dados da imagem, após upload via API, e armazena na Entidade Editora
+		if(null != imgDTO) {
+			Editora editoraFromJson = convertEditoraFromStringJson(editora);
+			editoraFromJson.setImagemFileName(imgDTO.getData().getImage().getFilename());
+			editoraFromJson.setImagemNome(imgDTO.getData().getTitle());
+			editoraFromJson.setImagemUrl(imgDTO.getData().getUrl());
+			novaEditora = editoraRepository.save(editoraFromJson);
+		}
+		
+		return toDTO(novaEditora);
+	}
+	
+	private Editora convertEditoraFromStringJson(String editoraJson) {
+		Editora editora = new Editora();
+		
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			editora = objectMapper.readValue(editoraJson, Editora.class);
+		} catch (IOException err) {
+			System.out.printf("Ocorreu um erro ao tentar converter a string json para um instância da entidade Editora", err.toString());
+		}
+		
+		return editora;
 	}
 	
 	//método para usar a consulta da API externa de CNPJ
