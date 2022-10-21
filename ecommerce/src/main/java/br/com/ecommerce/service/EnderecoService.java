@@ -8,13 +8,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import br.com.ecommerce.dto.ConsultaCep;
+import br.com.ecommerce.dto.EnderecoDTO;
 import br.com.ecommerce.entity.Endereco;
 import br.com.ecommerce.repository.EnderecoRepository;
+import br.com.residencia.biblioteca.dto.EditoraDTO;
+import br.com.residencia.biblioteca.entity.Editora;
 
 @Service
 public class EnderecoService {
 	@Autowired
 	EnderecoRepository enderecoRepository;
+	
+	 // ----- DTO CONVERSOR -----
+	
+	//método para fazer a conversão de um DTO para uma entidade normal
+	private Endereco toEntidade (EnderecoDTO enderecoDTO) {
+		Endereco endereco = new Endereco();
+		endereco.setIdEndereco(enderecoDTO.getIdEndereco());
+		return endereco;
+	}
+	
+	//método para fazer a conversão de uma entidade normal para um DTO
+	private EnderecoDTO toDTO(Endereco endereco) {
+		EnderecoDTO enderecoDTO = new EnderecoDTO();
+		enderecoDTO.setIdEndereco(endereco.getIdEndereco());
+		return enderecoDTO;
+	}
+	
+	 // ----- DTO CONVERSOR - FIM -----
 	
 	//get all
 	public List<Endereco> getAllEnderecos(){
@@ -27,25 +49,31 @@ public class EnderecoService {
 	}
 	
 	//save
-	public Endereco consultaCepApiExterna(String cep) {
+	public ConsultaCep consultaCepApiExterna(String cep) {
 		RestTemplate restTemplate = new RestTemplate();
 		
-		String uri = "https://receitaws.com.br/v1/cnpj/{cnpj}";
+		String uri = "https://viacep.com.br/ws/{cep}/json";
 		
 		Map<String,String> params = new HashMap<String, String>();
 		params.put("cep", cep);
 		
-		Endereco consultaCep = restTemplate.getForObject(uri, Endereco.class, params);
+		ConsultaCep consultaCep = restTemplate.getForObject(uri, ConsultaCep.class, params);
 		
 		return consultaCep;
 	}
 	
 	public Endereco saveEnderecoFromApi(String cep) {
-		Endereco consultaCep = consultaCepApiExterna(cep);
+		ConsultaCep consultaCep = consultaCepApiExterna(cep);
 		
 		Endereco endereco = new Endereco();
 		
 		endereco.setCep(consultaCep.getCep());
+		endereco.setBairro(consultaCep.getBairro());
+		endereco.setCidade(consultaCep.getLocalidade());
+		endereco.setComplemento(consultaCep.getComplemento());
+		endereco.setNumero(consultaCep.getNumero());
+		endereco.setRua(consultaCep.getLogradouro());
+		endereco.setUf(consultaCep.getUf());
 		
 		return enderecoRepository.save(endereco);
 	}

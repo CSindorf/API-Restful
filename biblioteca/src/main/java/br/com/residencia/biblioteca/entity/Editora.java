@@ -36,13 +36,13 @@ public class Editora {
 	private Set<Livro> livros; //aqui usa set porque uma editora pode ter vários livros, então o resultado tem que ser múltiplo, tipo um arrays
 
 	//para fazer upload de imagem
-	@Column(name = "imagem_nome")
+	@Column(name = "imagemnome")
 	private String imagemNome;
 	
-	@Column(name = "imagem_filename")
+	@Column(name = "imagemfilename")
 	private String imagemFileName;
 	
-	@Column(name = "imagem_url")
+	@Column(name = "imagemurl")
 	private String imagemUrl;
 	
 	public int getCodigoEditora() {

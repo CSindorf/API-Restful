@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.residencia.biblioteca.dto.LivroDTO;
 import br.com.residencia.biblioteca.entity.Livro;
+import br.com.residencia.biblioteca.exception.NoSuchElementFoundException;
 import br.com.residencia.biblioteca.service.LivroService;
 
 @RestController
@@ -35,9 +36,9 @@ public class LivroController {
 	public ResponseEntity<Livro> getLivroById(@PathVariable int id) {	
 		Livro livro = livroService.getLivroById(id);
 		if(null != livro)
-		return new ResponseEntity <>(livro,HttpStatus.OK); 
+			throw new NoSuchElementFoundException("Não foi encontrar livro com id "+id); 
 		else
-			return new ResponseEntity <>(livro,HttpStatus.NOT_FOUND); 
+			return new ResponseEntity <>(livro,HttpStatus.NOT_FOUND);
 	}
 	
 	@PostMapping
@@ -53,20 +54,28 @@ public class LivroController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Livro> updateLivro(@RequestBody Livro livro, @PathVariable int id){
-		return new ResponseEntity <>(livroService.updateLivro(livro, id),HttpStatus.OK);
+		Livro livro2 = livroService.getLivroById(id);
+		if(null != livro2)
+			throw new NoSuchElementFoundException("Não foi encontrar livro com id "+id); 
+		else
+			return new ResponseEntity <>(livroService.updateLivro(livro, id),HttpStatus.OK);
 	}
 	
 	//Update DTO
 	@PutMapping("/dto/{id}")
 	public ResponseEntity<LivroDTO> updateLivroDTO(@RequestBody LivroDTO livroDTO, @PathVariable int id){
-		return new ResponseEntity <>(livroService.updateLivroDTO(livroDTO, id),HttpStatus.OK);
+		Livro livro = livroService.getLivroById(id);
+		if(null == livro)
+			throw new NoSuchElementFoundException("Não foi encontrar livro com id "+id); 
+		else
+			return new ResponseEntity <>(livroService.updateLivroDTO(livroDTO, id),HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Livro> deleteLivro(@PathVariable int id) {
 		Livro livro = livroService.getLivroById(id);
 		if(null == livro)
-			return new ResponseEntity <>(livro,HttpStatus.NOT_FOUND);
+			throw new NoSuchElementFoundException("Não foi encontrar livro com id "+id);
 		else
 			return new ResponseEntity <>(livroService.deleteLivro(id),HttpStatus.OK);
 	}

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.residencia.biblioteca.dto.AlunoDTO;
 import br.com.residencia.biblioteca.dto.AlunoEmprestimoDTO;
 import br.com.residencia.biblioteca.entity.Aluno;
+import br.com.residencia.biblioteca.exception.NoSuchElementFoundException;
 import br.com.residencia.biblioteca.service.AlunoService;
 
 @RestController //anotação para saber que a classe é de um controller
@@ -42,7 +43,6 @@ public class AlunoController {
 		return new ResponseEntity<>(alunoService.getAllAlunosDTO(),HttpStatus.OK);
 	}
 	
-	
 	@GetMapping("/dto/aluno-emprestimos")
 	public ResponseEntity<List<AlunoDTO>> getAllAlunosEmprestimosDTO() {
 		return new ResponseEntity<>(alunoService.getAllEmprestimosAlunosDTO(), HttpStatus.OK);
@@ -59,10 +59,12 @@ public class AlunoController {
 	public ResponseEntity<Aluno> getAlunoById(@PathVariable int id) {
 		//esse PathVariable indica que uma variável é retornada para a url, nesse caso, o id do aluno
 		Aluno aluno = alunoService.getAlunoById(id);
-		if(null != aluno)
-		return new ResponseEntity <>(aluno,HttpStatus.OK); 
+		if(null == aluno)
+			//está usando o tratamento de erro específico para quando não encontra um id
+			throw new NoSuchElementFoundException("Não foi encontrado o aluno com id "+id);
+			//return new ResponseEntity <>(aluno,HttpStatus.NOT_FOUND); 
 		else
-			return new ResponseEntity <>(aluno,HttpStatus.NOT_FOUND);
+			return new ResponseEntity <>(aluno,HttpStatus.OK);
 		
 		//aqui cria um objeto do aluno pesquisado para fazer a pesquisa do if
 		//se o aluno for diferente de null, então se achar um aluno, ele da o ok e mostra os dados
@@ -85,20 +87,28 @@ public class AlunoController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Aluno> updateAluno(@RequestBody Aluno aluno, @PathVariable int id){
-		return new ResponseEntity <>(alunoService.updateAluno(aluno, id),HttpStatus.OK);
+		Aluno aluno2 = alunoService.getAlunoById(id);
+		if(null == aluno2)
+			throw new NoSuchElementFoundException("Não foi encontrado o aluno com id "+id);
+		else
+			return new ResponseEntity <>(alunoService.updateAluno(aluno, id),HttpStatus.OK);
 	}
 	
 	//Update DTO
 	@PutMapping("/dto/{id}")
 	public ResponseEntity<AlunoDTO> updateAlunoDTO(@RequestBody AlunoDTO alunoDTO, @PathVariable int id){
-		return new ResponseEntity <>(alunoService.updateAlunoDTO(alunoDTO, id),HttpStatus.OK);
+		Aluno aluno2 = alunoService.getAlunoById(id);
+		if(null == aluno2)
+			throw new NoSuchElementFoundException("Não foi encontrado o aluno com id "+id);
+		else
+			return new ResponseEntity <>(alunoService.updateAlunoDTO(alunoDTO, id),HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Aluno> deleteAluno(@PathVariable int id) {
 		Aluno aluno = alunoService.getAlunoById(id);
 		if(null == aluno)
-			return new ResponseEntity <>(aluno,HttpStatus.NOT_FOUND);
+			throw new NoSuchElementFoundException("Não foi encontrado o aluno com id "+id);
 		else
 			return new ResponseEntity <>(alunoService.deleteAluno(id),HttpStatus.OK);
 		

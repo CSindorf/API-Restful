@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.residencia.biblioteca.dto.EmprestimoDTO;
 import br.com.residencia.biblioteca.entity.Emprestimo;
+import br.com.residencia.biblioteca.exception.NoSuchElementFoundException;
 import br.com.residencia.biblioteca.service.EmprestimoService;
 
 @RestController
@@ -37,15 +38,17 @@ public class EmprestimoController {
 		return new ResponseEntity<>(emprestimoService.getAllEmprestimosDTO(),HttpStatus.OK);
 	}
 	
+	//get by id
 	@GetMapping("/{id}")
 	public ResponseEntity<Emprestimo> getEmprestimoById(@PathVariable int id) {	
 		Emprestimo emprestimo = emprestimoService.getEmprestimoById(id);
-		if(null != emprestimo)
-		return new ResponseEntity <>(emprestimo,HttpStatus.OK); 
+		if(null == emprestimo)
+			throw new NoSuchElementFoundException("Não foi encontrar empréstimo com id "+id);
 		else
-			return new ResponseEntity <>(emprestimo,HttpStatus.NOT_FOUND); 
+			return new ResponseEntity <>(emprestimo,HttpStatus.OK);
 	}
 	
+	//save normal
 	@PostMapping
 	public ResponseEntity<Emprestimo> saveEmprestimo(@RequestBody Emprestimo emprestimo) {
 		return new ResponseEntity <>(emprestimoService.saveEmprestimo(emprestimo),HttpStatus.CREATED);
@@ -57,22 +60,31 @@ public class EmprestimoController {
 		return new ResponseEntity <>(emprestimoService.saveEmprestimoDTO(emprestimoDTO),HttpStatus.CREATED);
 	}
 	
+	//update
 	@PutMapping("/{id}")
 	public ResponseEntity<Emprestimo> updateEmprestimo(@RequestBody Emprestimo emprestimo, @PathVariable int id){
-		return new ResponseEntity <>(emprestimoService.updateEmprestimo(emprestimo, id),HttpStatus.OK);
+		Emprestimo emprestimo2 = emprestimoService.getEmprestimoById(id);
+		if(null == emprestimo2)
+			throw new NoSuchElementFoundException("Não foi encontrar empréstimo com id "+id);
+		else
+			return new ResponseEntity <>(emprestimoService.updateEmprestimo(emprestimo, id),HttpStatus.OK);
 	}
 	
 	//Update DTO
 	@PutMapping("/dto/{id}")
 	public ResponseEntity<EmprestimoDTO> updateEmprestimoDTO(@RequestBody EmprestimoDTO emprestimoDTO, @PathVariable int id){
-		return new ResponseEntity <>(emprestimoService.updateEmprestimoDTO(emprestimoDTO, id),HttpStatus.OK);
+		Emprestimo emprestimo = emprestimoService.getEmprestimoById(id);
+		if(null == emprestimo)
+			throw new NoSuchElementFoundException("Não foi encontrar empréstimo com id "+id);
+		else
+			return new ResponseEntity <>(emprestimoService.updateEmprestimoDTO(emprestimoDTO, id),HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Emprestimo> deleteEmprestimo(@PathVariable int id) {
 		Emprestimo emprestimo = emprestimoService.getEmprestimoById(id);
 		if(null == emprestimo)
-			return new ResponseEntity <>(emprestimo,HttpStatus.NOT_FOUND);
+			throw new NoSuchElementFoundException("Não foi encontrar empréstimo com id "+id);
 		else
 			return new ResponseEntity <>(emprestimoService.deleteEmprestimo(id),HttpStatus.OK);
 	}

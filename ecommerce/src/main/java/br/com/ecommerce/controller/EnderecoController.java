@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.ecommerce.dto.ConsultaCep;
 import br.com.ecommerce.entity.Endereco;
 import br.com.ecommerce.service.EnderecoService;
 
@@ -38,8 +39,17 @@ public class EnderecoController {
 			return new ResponseEntity <>(endereco,HttpStatus.NOT_FOUND);
 	}
 	
+	@GetMapping("/consulta-cnpj/{cep}")
+	public ResponseEntity<ConsultaCep> consultaCepApiExterna(@PathVariable String cep){
+		ConsultaCep consultaCep = enderecoService.consultaCepApiExterna(cep);
+		if(null == consultaCep)
+			return new ResponseEntity <>(consultaCep,HttpStatus.NOT_FOUND);
+		else
+			return new ResponseEntity <>(consultaCep,HttpStatus.OK);
+	}
+	
 	//save
-	@GetMapping("/cep")
+	@GetMapping("cep/{cep}")
 	public ResponseEntity<Endereco> saveEnderecoFromApi(@PathVariable String cep) {
 		return new ResponseEntity <>(enderecoService.saveEnderecoFromApi(cep),HttpStatus.CREATED);
 	}

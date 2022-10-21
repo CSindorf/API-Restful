@@ -11,10 +11,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@JsonIdentityInfo(
-		generator = ObjectIdGenerators.PropertyGenerator.class,
-		property = "idendereco"
-		)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="idEndereco")
 @Entity //diz o tipo de classe
 @Table(name = "enderecos") //diz com qual tabela ela se comunica
 public class Endereco {
@@ -23,7 +20,7 @@ public class Endereco {
 	@Column (name = "idendereco")
 	private int idEndereco;
 	
-	@Column (name = "cep", unique = true)
+	@Column (name = "cep")
 	private String cep;
 	
 	@Column (name = "rua")
@@ -109,6 +106,13 @@ public class Endereco {
 
 	public void setUf(String uf) {
 		this.uf = uf;
+	}
+
+	@Override
+	public String toString() {
+		return "Endereco [idEndereco=" + idEndereco + ", cep=" + cep + ", rua=" + rua + ", bairro=" + bairro
+				+ ", cidade=" + cidade + ", numero=" + numero + ", complemento=" + complemento + ", uf=" + uf
+				+ ", cliente=" + cliente + "]";
 	}
 	
 }
